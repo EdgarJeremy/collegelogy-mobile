@@ -4,8 +4,7 @@ import { Card, Input, Button, Text } from 'react-native-elements';
 
 const style = StyleSheet.create({
     smText: { fontSize: 15 },
-    btn: { backgroundColor: '#16a085' },
-    link: { color: '#16a085', textDecorationLine: 'underline', fontWeight: 'bold' },
+    link: { color: '#3498db', textDecorationLine: 'underline', fontWeight: 'bold' },
     center: { textAlign: 'center' }
 });
 
@@ -65,7 +64,7 @@ class Login extends React.Component {
                         <View>
                             <Input value={data.username} onChangeText={(t) => this.onChange('username', t)} inputStyle={style.smText} label="Email" placeholder="Email" leftIcon={{ name: 'person' }} />
                             <Input value={data.password} onChangeText={(t) => this.onChange('password', t)} secureTextEntry={true} inputStyle={style.smText} label="Password" placeholder="Password" leftIcon={{ name: 'lock' }} />
-                            <Button onPress={this.onSubmit.bind(this)} buttonStyle={style.btn} title="Login" raised />
+                            <Button onPress={this.onSubmit.bind(this)} title="Login" type="outline" />
                         </View>
                         <Card.Divider />
                         <Text style={[style.link, style.center]} onPress={() => navigation.navigate('Register')}>Belum punya akun?</Text>

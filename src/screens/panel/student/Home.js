@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableNativeFeedback, Alert } from 'react-native';
-import { Button, Icon, Input } from 'react-native-elements';
+import { ListItem, Icon, Input } from 'react-native-elements';
 import randomColor from 'randomcolor';
-import Loading from '../Loading';
-import Border from '../components/Border';
+import Loading from '../../Loading';
+import Border from '../../../components/Border';
+import error from '../../../error';
 
 const style = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff' },
@@ -17,16 +18,19 @@ const style = StyleSheet.create({
 });
 
 class Home extends React.Component {
-    state = { ready: false, loading: false, newClass: '', rooms: [] };
+    state = { ready: false, loading: false, classCode: '', rooms: [] };
     componentDidMount() {
         this.fetch();
     }
     async onAdd() {
         const { models } = this.props;
-        const { newClass } = this.state;
+        const { classCode } = this.state;
         this.setState({ loading: true });
-        const room = await models.Room.create({ name: newClass });
-        this.setState({ loading: false }, this.fetch.bind(this));
+        try {
+            const r = await models.Room.$http(`rooms/${classCode}/join`, 'POST');
+            Alert.alert('Konfirmasi', `Selamat bergabung di kelas ${r.data.data.name}!`);
+        } catch (e) { error(e, models.Room.$utility) };
+        this.setState({ loading: false, classCode: '' }, this.fetch.bind(this));
     }
     async fetch() {
         const { models } = this.props;
@@ -35,41 +39,39 @@ class Home extends React.Component {
         this.setState({ ready: true, rooms: rooms.rows });
     }
     render() {
-        const { newClass, rooms, ready, loading } = this.state;
+        const { navigation } = this.props;
+        const { classCode, rooms, ready, loading } = this.state;
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={style.container}>
                     <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 20 }}>
-                        <Text style={style.title}>Beranda</Text>
+                        <Text style={style.title}>Kelas Anda</Text>
                         <Border />
                     </View>
                     <View style={{ flex: 1, flexDirection: 'row', paddingLeft: 10, paddingRight: 10 }}>
                         <View style={{ flex: 9, }}>
-                            <Input value={newClass} onChangeText={(t) => this.setState({ newClass: t })} containerStyle={{ margin: 0, padding: 0 }} placeholder="Kelas baru" />
+                            <Input value={classCode} onChangeText={(t) => this.setState({ classCode: t })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} placeholder="Isi kode kelas untuk bergabung" />
                         </View>
                         <View style={{ flex: 1, paddingTop: 10, alignItems: 'flex-end' }}>
-                            <Icon name="add" onPress={this.onAdd.bind(this)} size={15} color="#16a085" raised />
+                            <Icon name="add" disabled={loading || !classCode} onPress={this.onAdd.bind(this)} size={15} raised />
                         </View>
                     </View>
-                    <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+                    <View>
                         {ready ? (
                             rooms.length ? (
                                 rooms.map((r, i) => (
-                                    <TouchableNativeFeedback style={{ borderRadius: 10 }} key={i}>
-                                        <View style={[style.classCard, { marginTop: i === 0 ? 0 : 10 }, { backgroundColor: randomColor({ luminosity: 'dark', format: 'rgba', alpha: 0.7, seed: r.id }) }]}>
-                                            <View style={{ flex: 3 }}>
-                                                <Text style={style.classTitle}>{r.name}</Text>
-                                                <Text style={style.classSubtitle}>{r.participants.length} peserta</Text>
-                                            </View>
-                                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
-                                                <Icon name="chevron-right" color="#fff" />
-                                            </View>
-                                        </View>
-                                    </TouchableNativeFeedback>
+                                    <ListItem Component={TouchableNativeFeedback} onPress={() => navigation.navigate('Room', { room: r, refreshHome: this.fetch.bind(this) })} key={i} bottomDivider>
+                                        <ListItem.Content>
+                                            <ListItem.Title style={{ fontWeight: 'bold' }}>{r.name}</ListItem.Title>
+                                            <ListItem.Subtitle>Oleh {r.owner.name}</ListItem.Subtitle>
+                                            <ListItem.Subtitle>{r.participants.length} peserta, {r.tasks.length} tugas</ListItem.Subtitle>
+                                        </ListItem.Content>
+                                        <ListItem.Chevron />
+                                    </ListItem>
                                 ))
                             ) : (
                                 <View>
-                                    <Text style={{ textAlign: 'center', fontSize: 15 }}>Kelas kosong. Tambah kelas baru <Icon name="arrow-upward" /></Text>
+                                    <Text style={{ textAlign: 'center', fontSize: 15 }}>Kelas kosong</Text>
                                 </View>
                             )
                         ) : (
