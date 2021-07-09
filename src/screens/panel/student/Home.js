@@ -64,7 +64,7 @@ class Home extends React.Component {
                                         <ListItem.Content>
                                             <ListItem.Title style={{ fontWeight: 'bold' }}>{r.name}</ListItem.Title>
                                             <ListItem.Subtitle>Oleh {r.owner.name}</ListItem.Subtitle>
-                                            <ListItem.Subtitle>{r.participants.length} peserta, {r.tasks.length} tugas</ListItem.Subtitle>
+                                            <ListItem.Subtitle>{r.tasks.length} tugas</ListItem.Subtitle>
                                         </ListItem.Content>
                                         <ListItem.Chevron />
                                     </ListItem>

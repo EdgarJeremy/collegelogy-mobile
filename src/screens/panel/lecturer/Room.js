@@ -118,7 +118,8 @@ class Room extends React.Component {
                                     <ListItem key={i} bottomDivider>
                                         <ListItem.Content>
                                             <ListItem.Title style={{ fontWeight: 'bold' }}>{r.name}</ListItem.Title>
-                                            <ListItem.Title>{r.description}</ListItem.Title>
+                                            <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
+                                            <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
                                         </ListItem.Content>
                                     </ListItem>
                                 ))
