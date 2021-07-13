@@ -33,7 +33,6 @@ class Room extends React.Component {
         const { models, route } = this.props;
         this.setState({ ready: false });
         const tasks = await models.Task.collection({ where: { room_id: route.params.room.id } });
-        console.log(tasks);
         this.setState({ ready: true, tasks: tasks.rows });
     }
     async chooseFile(task) {
@@ -59,7 +58,6 @@ class Room extends React.Component {
     }
     hasPass(due) {
         const diff = moment().diff(moment(due));
-        console.log(diff);
         return diff >= 0;
     }
     render() {

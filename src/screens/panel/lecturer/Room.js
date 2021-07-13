@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet, ToastAndroid } from 'react-native';
-import { Button, Input, ListItem } from 'react-native-elements';
+import { View, ScrollView, Text, StyleSheet, ToastAndroid, TouchableNativeFeedback } from 'react-native';
+import { Button, Input, ListItem, Icon } from 'react-native-elements';
 import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -74,6 +74,10 @@ class Room extends React.Component {
         Clipboard.setString(room.code);
         ToastAndroid.show(`Kode kelas tersalin ke clipboard! (${room.code})`, 1000);
     }
+    hasPass(due) {
+        const diff = moment().diff(moment(due));
+        return diff >= 0;
+    }
     render() {
         const { navigation, route } = this.props;
         const { newTask, tasks, ready, openForm, openDate, openTime, addLoading, deleteLoading } = this.state;
@@ -114,15 +118,21 @@ class Room extends React.Component {
                     <View style={{ flex: 1 }}>
                         {ready ? (
                             tasks.length ? (
-                                tasks.map((r, i) => (
-                                    <ListItem key={i} bottomDivider>
-                                        <ListItem.Content>
-                                            <ListItem.Title style={{ fontWeight: 'bold' }}>{r.name}</ListItem.Title>
-                                            <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
-                                            <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
-                                        </ListItem.Content>
-                                    </ListItem>
-                                ))
+                                tasks.map((r, i) => {
+                                    const hasPass = this.hasPass(r.due_date);
+                                    return (
+                                        <ListItem onPress={() => navigation.navigate('Task', { task: r, room: route.params.room })} Component={TouchableNativeFeedback} key={i} bottomDivider>
+                                            <ListItem.Content>
+                                                <ListItem.Title style={{
+                                                    fontWeight: 'bold',
+                                                    color: (hasPass ? '#f39c12' : 'black')
+                                                }}>{r.name} {hasPass ? <Icon name="lock" color="#f39c12" size={15} /> : null}</ListItem.Title>
+                                                <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
+                                                <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
+                                            </ListItem.Content>
+                                        </ListItem>
+                                    )
+                                })
                             ) : (
                                 <View style={{ flex: 1, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
                                     <Text style={{ textAlign: 'center', fontSize: 15, marginTop: 15 }}>Tugas kosong. Tambah tugas baru</Text>

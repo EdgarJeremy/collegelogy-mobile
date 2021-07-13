@@ -21,7 +21,7 @@ import Register from './src/screens/Register';
 import Loading from './src/screens/Loading';
 import Error from './src/screens/Error';
 
-import { LHome, LRoom, SHome, SRoom } from './src/screens/panel';
+import { LHome, LRoom, LTask, SHome, SRoom } from './src/screens/panel';
 
 const Stack = createStackNavigator();
 const adapter = new SiriusAdapter('http://10.0.2.2', 1234, AsyncStorage);
@@ -86,6 +86,9 @@ class App extends React.Component {
                     </Stack.Screen>
                     <Stack.Screen options={{ title: 'Kelas' }} name="Room">
                       {props => <LRoom {...props} user={user} models={models} authProvider={authProvider} />}
+                    </Stack.Screen>
+                    <Stack.Screen options={{ title: 'Tugas' }} name="Task">
+                      {props => <LTask {...props} user={user} models={models} authProvider={authProvider} />}
                     </Stack.Screen>
                   </Stack.Navigator>
                 ) : (
