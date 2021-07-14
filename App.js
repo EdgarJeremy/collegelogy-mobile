@@ -21,10 +21,10 @@ import Register from './src/screens/Register';
 import Loading from './src/screens/Loading';
 import Error from './src/screens/Error';
 
-import { LHome, LRoom, LTask, SHome, SRoom } from './src/screens/panel';
+import { LDifference, LHome, LRoom, LTask, SHome, SRoom } from './src/screens/panel';
 
 const Stack = createStackNavigator();
-const adapter = new SiriusAdapter('http://10.0.2.2', 1234, AsyncStorage);
+const adapter = new SiriusAdapter('http://192.168.2.1', 1234, AsyncStorage);
 
 class App extends React.Component {
   state = { user: null, ready: false, error: false, models: null, authProvider: null }
@@ -89,6 +89,9 @@ class App extends React.Component {
                     </Stack.Screen>
                     <Stack.Screen options={{ title: 'Tugas' }} name="Task">
                       {props => <LTask {...props} user={user} models={models} authProvider={authProvider} />}
+                    </Stack.Screen>
+                    <Stack.Screen options={{ title: 'Plagiat' }} name="Difference">
+                      {props => <LDifference {...props} user={user} models={models} authProvider={authProvider} />}
                     </Stack.Screen>
                   </Stack.Navigator>
                 ) : (

@@ -53,7 +53,7 @@ class Home extends React.Component {
                             <Input value={classCode} onChangeText={(t) => this.setState({ classCode: t })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} placeholder="Isi kode kelas untuk bergabung" />
                         </View>
                         <View style={{ flex: 1, paddingTop: 10, alignItems: 'flex-end' }}>
-                            <Icon name="add" disabled={loading || !classCode} onPress={this.onAdd.bind(this)} size={15} raised />
+                            <Icon name="input" disabled={loading || !classCode} onPress={this.onAdd.bind(this)} size={15} raised />
                         </View>
                     </View>
                     <View>

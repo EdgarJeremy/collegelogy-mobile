@@ -64,7 +64,7 @@ class Login extends React.Component {
                         <View>
                             <Input value={data.username} onChangeText={(t) => this.onChange('username', t)} inputStyle={style.smText} label="Email" placeholder="Email" leftIcon={{ name: 'person' }} />
                             <Input value={data.password} onChangeText={(t) => this.onChange('password', t)} secureTextEntry={true} inputStyle={style.smText} label="Password" placeholder="Password" leftIcon={{ name: 'lock' }} />
-                            <Button onPress={this.onSubmit.bind(this)} title="Login" type="outline" />
+                            <Button raised onPress={this.onSubmit.bind(this)} title="Login" type="outline" />
                         </View>
                         <Card.Divider />
                         <Text style={[style.link, style.center]} onPress={() => navigation.navigate('Register')}>Belum punya akun?</Text>

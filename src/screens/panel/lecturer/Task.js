@@ -1,9 +1,7 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet, ToastAndroid, TouchableNativeFeedback } from 'react-native';
-import { Button, Input, ListItem, Icon } from 'react-native-elements';
-import Clipboard from '@react-native-clipboard/clipboard';
-import moment from 'moment';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { Button, ListItem, Icon } from 'react-native-elements';
+import * as Progress from 'react-native-progress';
 import Loading from '../../Loading';
 import Border from '../../../components/Border';
 
@@ -76,39 +74,71 @@ class Task extends React.Component {
     }
     render() {
         const { navigation, route } = this.props;
-        const { tasks, ready, participants } = this.state;
+        const { ready, participants } = this.state;
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={style.container}>
                     <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 20 }}>
-                        <Text style={style.title}>{route.params.room.name}</Text>
+                        <Text style={style.title}>{route.params.task.name}</Text>
                         <Border />
                     </View>
                     <View style={{ flex: 1 }}>
-                        {/* {ready ? (
+                        {ready ? (
                             participants.length ? (
                                 participants.map((r, i) => {
                                     return (
-                                        <ListItem Component={TouchableNativeFeedback} key={i} bottomDivider>
+                                        <ListItem key={i} bottomDivider>
                                             <ListItem.Content>
-                                                <ListItem.Title style={{
-                                                    fontWeight: 'bold',
-                                                    color: (hasPass ? '#f39c12' : 'black')
-                                                }}>{r.name} {hasPass ? <Icon name="lock" color="#f39c12" size={15} /> : null}</ListItem.Title>
-                                                <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
-                                                <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
+                                                <View style={{ flex: 1, flexDirection: 'row' }}>
+                                                    <View style={{ flex: 4 }}>
+                                                        <ListItem.Title style={{
+                                                            fontWeight: 'bold',
+                                                            color: (r.documents.length === 0 ? '#e74c3c' : 'black')
+                                                        }}>{r.student.name.toUpperCase()}</ListItem.Title>
+                                                        <ListItem.Subtitle>{r.student.username}</ListItem.Subtitle>
+                                                        {r.documents.length > 0 ? (
+                                                            <ListItem.Subtitle>Skor plagiat rata-rata : {r.documents[0].differences.reduce((t, c) => t + c.percentage, 0) / r.documents[0].differences.length}%</ListItem.Subtitle>
+                                                        ) : (
+                                                            <ListItem.Subtitle>Peserta tidak mengupload dokumen</ListItem.Subtitle>
+                                                        )}
+                                                    </View>
+                                                    {r.documents.length > 0 ? (
+                                                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                                            <Progress.Circle animated={false} showsText color={(() => {
+                                                                const percent = r.documents[0].differences.reduce((t, c) => t + c.percentage, 0) / r.documents[0].differences.length;
+                                                                let color = "#2ecc71"; // green
+                                                                if (percent > 20 && percent < 50) {
+                                                                    color = "#f39c12"; // orange
+                                                                } else if (percent > 50) {
+                                                                    color = "#e74c3c";
+                                                                }
+                                                                return color;
+                                                            })()} size={60} progress={(r.documents[0].differences.reduce((t, c) => t + c.percentage, 0) / r.documents[0].differences.length) / 100} />
+                                                        </View>
+                                                    ) : (
+                                                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                                            <Icon name="close" color="#e74c3c" size={60} />
+                                                        </View>
+                                                    )}
+                                                </View>
+                                                {r.documents.length > 0 && (
+                                                    <View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
+                                                        <Button raised icon={{ name: 'file-download' }} containerStyle={{ flex: 1 }} titleStyle={{ color: '#000' }} type="outline" title={r.documents[0].name.length > 10 ? r.documents[0].name.substring(0, 10) + '...' : r.documents[0].name} />
+                                                        <Button raised onPress={() => navigation.navigate('Difference', { student: r.student, others: r.documents[0].differences })} icon={{ name: 'compare' }} containerStyle={{ flex: 1 }} titleStyle={{ color: '#000' }} type="outline" title="Cek Plagiat" />
+                                                    </View>
+                                                )}
                                             </ListItem.Content>
                                         </ListItem>
                                     )
                                 })
                             ) : (
                                 <View style={{ flex: 1, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 15, marginTop: 15 }}>Tugas kosong. Tambah tugas baru</Text>
+                                    <Text style={{ textAlign: 'center', fontSize: 15, marginTop: 15 }}>Tidak ada peserta kelas</Text>
                                 </View>
                             )
                         ) : (
                             <Loading />
-                        )} */}
+                        )}
                     </View>
                 </View>
             </ScrollView>

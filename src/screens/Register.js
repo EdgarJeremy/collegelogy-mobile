@@ -88,7 +88,7 @@ class Register extends React.Component {
                             <Input value={data.username} onChangeText={(t) => this.onChange('username', t)} inputStyle={style.smText} label="Email" placeholder="Email" leftIcon={{ name: 'person' }} />
                             <Input value={data.name} onChangeText={(t) => this.onChange('name', t)} inputStyle={style.smText} label="Nama Lengkap" placeholder="Nama Lengkap" leftIcon={{ name: 'person' }} />
                             <Input value={data.password} secureTextEntry={true} onChangeText={(t) => this.onChange('password', t)} inputStyle={style.smText} label="Password" placeholder="Password" leftIcon={{ name: 'lock' }} />
-                            <Button loading={loading} onPress={this.onSubmit.bind(this)} type="outline" title="Daftar" />
+                            <Button raised loading={loading} onPress={this.onSubmit.bind(this)} type="outline" title="Daftar" />
                         </View>
                         <Card.Divider />
                         <Text style={[style.link, style.center]} onPress={() => navigation.goBack()}>Login</Text>
