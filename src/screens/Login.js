@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, Image, Dimensions } from 'react-native';
 import { Card, Input, Button, Text } from 'react-native-elements';
 
 const style = StyleSheet.create({
@@ -58,6 +58,7 @@ class Login extends React.Component {
         return (
             <View>
                 <ScrollView>
+                    <Image source={require('../images/logo.png')} style={{ width: Dimensions.get('screen').width / 1.5, resizeMode: 'contain', alignSelf: 'center', height: 200, marginTop: 10 }} />
                     <Card>
                         <Card.Title>Login | Collegelogy</Card.Title>
                         <Card.Divider />
