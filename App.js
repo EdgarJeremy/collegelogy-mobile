@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Icon } from 'react-native-elements';
 import SiriusAdapter from '@edgarjeremy/sirius.adapter';
+import config from './config';
 
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
@@ -24,7 +25,7 @@ import Error from './src/screens/Error';
 import { LDifference, LHome, LRoom, LTask, SHome, SRoom } from './src/screens/panel';
 
 const Stack = createStackNavigator();
-const adapter = new SiriusAdapter('http://192.168.2.1', 1234, AsyncStorage);
+const adapter = new SiriusAdapter(config.baseURL, config.port, AsyncStorage);
 
 class App extends React.Component {
   state = { user: null, ready: false, error: false, models: null, authProvider: null }

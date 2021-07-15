@@ -121,7 +121,7 @@ class Room extends React.Component {
                                 tasks.map((r, i) => {
                                     const hasPass = this.hasPass(r.due_date);
                                     return (
-                                        <ListItem onPress={() => navigation.navigate('Task', { task: r, room: route.params.room })} Component={TouchableNativeFeedback} key={i} bottomDivider>
+                                        <ListItem onPress={() => navigation.navigate('Task', { task: r, room: route.params.room, hasPass })} Component={TouchableNativeFeedback} key={i} bottomDivider>
                                             <ListItem.Content>
                                                 <ListItem.Title style={{
                                                     fontWeight: 'bold',
