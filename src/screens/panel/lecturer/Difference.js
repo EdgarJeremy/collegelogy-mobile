@@ -45,7 +45,7 @@ class Difference extends React.Component {
                                         <ListItem key={i} bottomDivider>
                                             <ListItem.Content>
                                                 <ListItem.Title style={{ fontWeight: 'bold' }}>{r.b.participant.student.name.toUpperCase()}</ListItem.Title>
-                                                <ListItem.Subtitle>Presentase plagiat dengan {route.params.student.name} : {r.percentage}%</ListItem.Subtitle>
+                                                <ListItem.Subtitle>Presentase plagiat: {r.percentage}%</ListItem.Subtitle>
                                                 <Progress.Bar style={{ marginTop: 10, flex: 1 }} progress={r.percentage / 100} color={(() => {
                                                     const percent = r.percentage;
                                                     let color = "#2ecc71"; // green

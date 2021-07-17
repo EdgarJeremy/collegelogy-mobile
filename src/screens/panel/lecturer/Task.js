@@ -4,6 +4,7 @@ import { Button, ListItem, Icon } from 'react-native-elements';
 import FileViewer from 'react-native-file-viewer';
 import * as Progress from 'react-native-progress';
 import RNFS from 'react-native-fs';
+import _ from 'lodash';
 import Loading from '../../Loading';
 import Border from '../../../components/Border';
 import config from '../../../../config';
@@ -97,6 +98,10 @@ class Task extends React.Component {
             }
         } catch (err) { return false }
     }
+    getMax(differences) {
+        console.log(differences);
+        return _.maxBy(differences, 'percentage').percentage;
+    }
     render() {
         const { navigation, route } = this.props;
         const { ready, participants } = this.state;
@@ -113,6 +118,7 @@ class Task extends React.Component {
                         {ready ? (
                             participants.length ? (
                                 participants.map((r, i) => {
+                                    const score = r.documents[0] ? (r.documents[0].differences.length > 0 ? this.getMax(r.documents[0].differences) : null) : null;
                                     return (
                                         <ListItem key={i} bottomDivider>
                                             <ListItem.Content>
@@ -124,7 +130,7 @@ class Task extends React.Component {
                                                         }}>{r.student.name.toUpperCase()}</ListItem.Title>
                                                         <ListItem.Subtitle>{r.student.username}</ListItem.Subtitle>
                                                         {r.documents.length > 0 ? (
-                                                            hasPass && r.documents[0].differences.length > 0 && <ListItem.Subtitle>Skor plagiat rata-rata : {r.documents[0].differences.reduce((t, c) => t + c.percentage, 0) / r.documents[0].differences.length}%</ListItem.Subtitle>
+                                                            hasPass && r.documents[0].differences.length > 0 && <ListItem.Subtitle>Skor plagiat tertinggi: {score}%</ListItem.Subtitle>
                                                         ) : (
                                                             <ListItem.Subtitle>Peserta {hasPass ? 'tidak' : 'belum'} mengupload dokumen</ListItem.Subtitle>
                                                         )}
@@ -132,7 +138,7 @@ class Task extends React.Component {
                                                     {r.documents.length > 0 ? (
                                                         (hasPass && r.documents[0].differences.length > 0) && <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                                             <Progress.Circle animated={false} showsText color={(() => {
-                                                                const percent = r.documents[0].differences.reduce((t, c) => t + c.percentage, 0) / r.documents[0].differences.length;
+                                                                const percent = score;
                                                                 let color = "#2ecc71"; // green
                                                                 if (percent > 20 && percent < 50) {
                                                                     color = "#f39c12"; // orange
@@ -140,7 +146,7 @@ class Task extends React.Component {
                                                                     color = "#e74c3c";
                                                                 }
                                                                 return color;
-                                                            })()} size={60} progress={(r.documents[0].differences.reduce((t, c) => t + c.percentage, 0) / r.documents[0].differences.length) / 100} />
+                                                            })()} size={60} progress={(score) / 100} />
                                                         </View>
                                                     ) : (
                                                         hasPass && <View style={{ flex: 1, alignItems: 'flex-end' }}>
