@@ -42,8 +42,12 @@ class App extends React.Component {
       try {
         const user = await authProvider.get();
         this.setState({ ready: true, error: false, user, models, authProvider });
-      } catch (e) { this.setState({ ready: true, error: false, models, authProvider }); }
+      } catch (e) {
+        // alert(JSON.stringify(e));
+        this.setState({ ready: true, error: false, models, authProvider });
+      }
     } catch (e) {
+      // alert(JSON.stringify(e));
       this.setState({ ready: true, error: true });
     }
   }

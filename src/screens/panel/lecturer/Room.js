@@ -2,6 +2,8 @@ import React from 'react';
 import { View, ScrollView, Text, StyleSheet, ToastAndroid, TouchableNativeFeedback } from 'react-native';
 import { Button, Input, ListItem, Icon } from 'react-native-elements';
 import Clipboard from '@react-native-clipboard/clipboard';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Loading from '../../Loading';
@@ -26,7 +28,8 @@ class Room extends React.Component {
         newTask: {
             name: '',
             description: '',
-            due_date: null
+            due_date: null,
+            file: null,
         },
         tasks: [],
         openForm: false,
@@ -49,10 +52,31 @@ class Room extends React.Component {
             addLoading: false, newClass: {
                 name: '',
                 description: '',
-                due_date: null
+                due_date: null,
+                file: null
             },
             openForm: false
         }, this.fetch.bind(this));
+    }
+    async chooseFile() {
+        const { newTask } = this.state;
+        try {
+            const res = await DocumentPicker.pick({
+                type: [
+                    DocumentPicker.types.pdf,
+                    DocumentPicker.types.docx,
+                    DocumentPicker.types.images
+                ]
+            });
+            const file = await RNFS.readFile(res.uri, 'base64');
+            newTask.file = {
+                name: res.name,
+                data: file
+            };
+            this.setState({ newTask });
+        } catch (err) {
+            if (!DocumentPicker.isCancel(err)) error(err);
+        }
     }
     async fetch() {
         const { models, route } = this.props;
@@ -98,6 +122,7 @@ class Room extends React.Component {
                             <Input value={newTask.name} onChangeText={(t) => this.setState({ newTask: { ...newTask, name: t } })} containerStyle={{ margin: 0, padding: 0 }} errorStyle={{ display: 'none' }} placeholder="Judul" />
                             <Input value={newTask.description} onChangeText={(t) => this.setState({ newTask: { ...newTask, description: t } })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} placeholder="Deskripsi" />
                             <Input value={newTask.due_date ? moment(newTask.due_date).format('dddd Do MMMM YYYY, h:mm:ss a') : undefined} onPressOut={() => this.setState({ openDate: true, newTask: { ...newTask, due_date: newTask.due_date ? newTask.due_date : new Date() } })} containerStyle={{ margin: 0, padding: 0 }} placeholder="Tenggat Waktu" />
+                            <Button containerStyle={{ marginBottom: 5 }} title="Pilih file" icon={newTask.file ? { name: 'check', color: '#fff' } : undefined} iconRight onPress={this.chooseFile.bind(this)} type={newTask.file ? 'solid' : 'outline'} />
                             <Button title="Tambah" disabled={!newTask.name || !newTask.description || !newTask.due_date} loading={addLoading} onPress={this.onAdd.bind(this)} />
                             {openDate && <DateTimePicker
                                 value={newTask.due_date}

@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet, TouchableNativeFeedback, Alert } from 'react-native';
-import { ListItem, Icon } from 'react-native-elements';
+import { View, ScrollView, Text, StyleSheet, TouchableNativeFeedback, PermissionsAndroid, ToastAndroid } from 'react-native';
+import { ListItem, Icon, Button } from 'react-native-elements';
+import FileViewer from 'react-native-file-viewer';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import moment from 'moment';
 import Loading from '../../Loading';
 import Border from '../../../components/Border';
 import error from '../../../error';
+import config from '../../../../config';
 
 import 'moment/locale/id';
 
@@ -33,6 +35,7 @@ class Room extends React.Component {
         const { models, route } = this.props;
         this.setState({ ready: false });
         const tasks = await models.Task.collection({ where: { room_id: route.params.room.id } });
+        console.log(tasks);
         this.setState({ ready: true, tasks: tasks.rows });
     }
     async chooseFile(task) {
@@ -55,6 +58,27 @@ class Room extends React.Component {
             if (!DocumentPicker.isCancel(err)) error(err);
             this.setState({ ready: true });
         }
+    }
+    async download(id, name) {
+        const url = `${config.baseURL}:${config.port}/task_document/${id}`;
+        const toFile = `${RNFS.DownloadDirectoryPath}/${name}`;
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                try {
+                    const res = await RNFS.downloadFile({
+                        fromUrl: url,
+                        toFile: toFile
+                    });
+                    ToastAndroid.show(`File ${name} berhasil disimpan`, ToastAndroid.LONG);
+                    await FileViewer.open(toFile);
+                } catch (e) { ToastAndroid.show('Error: ' + e.message, ToastAndroid.LONG) };
+            } else {
+                return false;
+            }
+        } catch (err) { console.log(err); return false }
     }
     hasPass(due) {
         const diff = moment().diff(moment(due));
@@ -89,6 +113,7 @@ class Room extends React.Component {
                                                 </ListItem.Title>
                                                 <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
                                                 <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
+                                                {r.hasFile && <Button onPress={() => this.download(r.id, r.filename)} containerStyle={{ marginTop: 5 }} title="Download File" icon={{ name: 'file-download', color: '#fff' }} />}
                                             </ListItem.Content>
                                         </ListItem>
                                     )
