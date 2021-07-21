@@ -14,6 +14,9 @@ const error = function (e, utility) {
         return Alert.alert('Terjadi Kesalahan', JSON.stringify(e.response.data));
     } else {
         if (e.errors) {
+            if (e.errors.length) {
+                return Alert.alert('Terjadi Kesalahan', e.errors.map((e) => e.msg).join());
+            }
             if (e.errors.errors) {
                 if (e.errors.errors.length) {
                     return Alert.alert('Terjadi Kesalahan', e.errors.errors.map((e) => e.msg).join());

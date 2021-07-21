@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet, ToastAndroid, TouchableNativeFeedback } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, ToastAndroid, TouchableNativeFeedback, Alert } from 'react-native';
 import { Button, Input, ListItem, Icon } from 'react-native-elements';
 import Clipboard from '@react-native-clipboard/clipboard';
 import DocumentPicker from 'react-native-document-picker';
@@ -8,6 +8,7 @@ import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Loading from '../../Loading';
 import Border from '../../../components/Border';
+import error from '../../../error';
 
 import 'moment/locale/id';
 
@@ -47,16 +48,18 @@ class Room extends React.Component {
         const { newTask } = this.state;
         newTask.room_id = route.params.room.id;
         this.setState({ addLoading: true });
-        const task = await models.Task.create(newTask);
-        this.setState({
-            addLoading: false, newClass: {
-                name: '',
-                description: '',
-                due_date: null,
-                file: null
-            },
-            openForm: false
-        }, this.fetch.bind(this));
+        try {
+            const task = await models.Task.create(newTask);
+            this.setState({
+                addLoading: false, newClass: {
+                    name: '',
+                    description: '',
+                    due_date: null,
+                    file: null
+                },
+                openForm: false
+            }, this.fetch.bind(this));
+        } catch (e) { error(e); this.setState({ addLoading: false }) }
     }
     async chooseFile() {
         const { newTask } = this.state;
