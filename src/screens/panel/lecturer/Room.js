@@ -68,7 +68,8 @@ class Room extends React.Component {
                 type: [
                     DocumentPicker.types.pdf,
                     DocumentPicker.types.docx,
-                    DocumentPicker.types.images
+                    DocumentPicker.types.images,
+                    DocumentPicker.types.doc
                 ]
             });
             const file = await RNFS.readFile(res.uri, 'base64');
