@@ -1,6 +1,6 @@
 export default {
     // baseURL: 'http://10.0.2.2',
     // baseURL: 'http://192.168.2.1',
-    baseURL: 'http://192.168.42.131',
-    port: 1234
+    baseURL: 'http://http://36.67.25.4',
+    port: 1555
 }
