@@ -44,7 +44,7 @@ class Room extends React.Component {
         this.setState({ ready: false });
         try {
             const res = await DocumentPicker.pick({
-                type: [DocumentPicker.types.pdf, DocumentPicker.types.docx]
+                type: [DocumentPicker.types.pdf, DocumentPicker.types.docx, DocumentPicker.types.doc, DocumentPicker.types.xls, DocumentPicker.types.xlsx, DocumentPicker.types.plainText]
             });
             const file = await RNFS.readFile(res.uri, 'base64');
             await models.Document.create({
@@ -100,7 +100,7 @@ class Room extends React.Component {
                                 tasks.map((r, i) => {
                                     const hasPass = this.hasPass(r.due_date);
                                     return (
-                                        <ListItem disabled={hasPass || r.documents.length > 0} onPress={() => this.chooseFile(r)} Component={TouchableNativeFeedback} key={i} bottomDivider>
+                                        <ListItem Component={TouchableNativeFeedback} key={i} bottomDivider>
                                             <ListItem.Content>
                                                 <ListItem.Title style={{
                                                     fontWeight: 'bold',
@@ -113,7 +113,8 @@ class Room extends React.Component {
                                                 </ListItem.Title>
                                                 <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
                                                 <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
-                                                {r.hasFile && <Button onPress={() => this.download(r.id, r.filename)} containerStyle={{ marginTop: 5 }} title="Download File" icon={{ name: 'file-download', color: '#fff' }} />}
+                                                {(!hasPass && r.documents.length === 0) && <Button onPress={() => this.chooseFile(r)} containerStyle={{ marginTop: 5 }} title="Upload Tugas" icon={{ name: 'file-upload', color: '#fff' }} />}
+                                                {r.hasFile && <Button onPress={() => this.download(r.id, r.filename)} containerStyle={{ marginTop: 5 }} title="Download Tugas" icon={{ name: 'file-download', color: '#fff' }} />}
                                             </ListItem.Content>
                                         </ListItem>
                                     )

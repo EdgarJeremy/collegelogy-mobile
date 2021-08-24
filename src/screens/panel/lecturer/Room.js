@@ -158,6 +158,10 @@ class Room extends React.Component {
                                                 }}>{r.name} {hasPass ? <Icon name="lock" color="#f39c12" size={15} /> : null}</ListItem.Title>
                                                 <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
                                                 <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
+                                                <Button icon={{ name: 'close' }} title="Hapus" onPress={async () => {
+                                                    await r.delete();
+                                                    await this.fetch();
+                                                }} />
                                             </ListItem.Content>
                                         </ListItem>
                                     )
