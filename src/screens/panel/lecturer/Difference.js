@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { Button, ListItem, Icon } from 'react-native-elements';
 import * as Progress from 'react-native-progress';
-import Loading from '../../Loading';
+import * as Diff from 'diff';
 import Border from '../../../components/Border';
 
 import 'moment/locale/id';
@@ -28,7 +28,7 @@ class Difference extends React.Component {
         this.setState({ others: route.params.others });
     }
     render() {
-        const { route } = this.props;
+        const { route, navigation } = this.props;
         const { others } = this.state;
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -41,8 +41,9 @@ class Difference extends React.Component {
                         {
                             others.length ? (
                                 others.map((r, i) => {
+                                    const diff = Diff.diffWords(r.a.content, r.b.content, { ignoreCase: true });
                                     return (
-                                        <ListItem key={i} bottomDivider>
+                                        <ListItem key={i} onPress={() => navigation.navigate('Doc', { diff, from: route.params.student.name, to: r.b.participant.student.name })} bottomDivider>
                                             <ListItem.Content>
                                                 <ListItem.Title style={{ fontWeight: 'bold' }}>{r.b.participant.student.name.toUpperCase()}</ListItem.Title>
                                                 <ListItem.Subtitle>Presentase plagiat: {r.percentage}%</ListItem.Subtitle>

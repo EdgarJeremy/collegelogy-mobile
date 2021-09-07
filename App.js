@@ -22,7 +22,7 @@ import Register from './src/screens/Register';
 import Loading from './src/screens/Loading';
 import Error from './src/screens/Error';
 
-import { LDifference, LHome, LRoom, LTask, SHome, SRoom } from './src/screens/panel';
+import { LDifference, LHome, LRoom, LTask, LDoc, SHome, SRoom, STask } from './src/screens/panel';
 
 const Stack = createStackNavigator();
 const adapter = new SiriusAdapter(config.baseURL, config.port, AsyncStorage);
@@ -47,6 +47,7 @@ class App extends React.Component {
         this.setState({ ready: true, error: false, models, authProvider });
       }
     } catch (e) {
+      console.dir(e);
       // alert(JSON.stringify(e));
       this.setState({ ready: true, error: true });
     }
@@ -98,6 +99,9 @@ class App extends React.Component {
                     <Stack.Screen options={{ title: 'Plagiat' }} name="Difference">
                       {props => <LDifference {...props} user={user} models={models} authProvider={authProvider} />}
                     </Stack.Screen>
+                    <Stack.Screen options={{ title: 'Perbedaan Dokumen' }} name="Doc">
+                      {props => <LDoc {...props} user={user} models={models} authProvider={authProvider} />}
+                    </Stack.Screen>
                   </Stack.Navigator>
                 ) : (
                   <Stack.Navigator screenOptions={{ title: 'CollegeLogy' }}>
@@ -109,6 +113,9 @@ class App extends React.Component {
                     </Stack.Screen>
                     <Stack.Screen options={{ title: 'Kelas' }} name="Room">
                       {props => <SRoom {...props} user={user} models={models} authProvider={authProvider} />}
+                    </Stack.Screen>
+                    <Stack.Screen options={{ title: 'Tugas' }} name="Task">
+                      {props => <STask {...props} user={user} models={models} authProvider={authProvider} />}
                     </Stack.Screen>
                   </Stack.Navigator>
                 )

@@ -5,6 +5,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import moment from 'moment';
+import { shortText } from 'limit-text-js';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Loading from '../../Loading';
 import Border from '../../../components/Border';
@@ -38,9 +39,15 @@ class Room extends React.Component {
         openTime: false,
 
         deleteLoading: false,
-        addLoading: false
+        addLoading: false,
+
+        name: null,
+        edit: false,
+        editName: false
     };
     componentDidMount() {
+        const { route } = this.props;
+        this.setState({ name: route.params.room.name, editName: route.params.room.name });
         this.fetch();
     }
     async onAdd() {
@@ -106,16 +113,37 @@ class Room extends React.Component {
         const diff = moment().diff(moment(due));
         return diff >= 0;
     }
+    async onEdit() {
+        const { editName } = this.state;
+        const { route } = this.props;
+        const { params: { room, refreshHome } } = route;
+        await room.update({ name: editName });
+        this.setState({ name: editName, edit: false }, () => refreshHome());
+    }
     render() {
         const { navigation, route } = this.props;
-        const { newTask, tasks, ready, openForm, openDate, openTime, addLoading, deleteLoading } = this.state;
+        const { newTask, tasks, ready, openForm, openDate, openTime, addLoading, deleteLoading, edit, editName, name } = this.state;
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={style.container}>
-                    <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 20 }}>
-                        <Text style={style.title}>{route.params.room.name}</Text>
-                        <Border />
-                    </View>
+                    {!edit ? (
+                        <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 20 }}>
+                            <Text style={style.title}>{name} <Icon onPress={() => this.setState({ edit: true })} color="#3498db" name="edit" size={25} /></Text>
+                            <Border />
+                        </View>
+                    ) : (
+                        <View style={{ flex: 1, flexDirection: 'row', paddingLeft: 10, paddingRight: 10 }}>
+                            <View style={{ flex: 5, }}>
+                                <Input value={editName} onChangeText={(t) => this.setState({ editName: t })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} inputStyle={{ fontSize: 25, fontWeight: 'bold' }} placeholder="Edit tugas" />
+                            </View>
+                            <View style={{ flex: 1, paddingTop: 10, alignItems: 'flex-end' }}>
+                                <Icon name="save" onPress={this.onEdit.bind(this)} size={20} raised />
+                            </View>
+                            <View style={{ flex: 1, paddingTop: 10, alignItems: 'flex-end' }}>
+                                <Icon name="cancel" onPress={() => this.setState({ edit: false, editName: name })} size={20} raised />
+                            </View>
+                        </View>
+                    )}
                     <View style={{ flex: 1, marginTop: 10, paddingLeft: 10, paddingRight: 10 }}>
                         <View style={{ flex: 1, width: '100%', flexDirection: 'row' }}>
                             <Button type="outline" containerStyle={{ flex: 1 }} icon={{ name: 'add' }} raised onPress={() => this.setState({ openForm: !openForm })} />
@@ -123,11 +151,11 @@ class Room extends React.Component {
                             <Button type="outline" containerStyle={{ flex: 1 }} icon={{ name: 'delete', color: '#e74c3c' }} loading={deleteLoading} raised onPress={this.onDelete.bind(this)} />
                         </View>
                         {openForm && <View>
-                            <Input value={newTask.name} onChangeText={(t) => this.setState({ newTask: { ...newTask, name: t } })} containerStyle={{ margin: 0, padding: 0 }} errorStyle={{ display: 'none' }} placeholder="Judul" />
-                            <Input value={newTask.description} onChangeText={(t) => this.setState({ newTask: { ...newTask, description: t } })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} placeholder="Deskripsi" />
-                            <Input value={newTask.due_date ? moment(newTask.due_date).format('dddd Do MMMM YYYY, h:mm:ss a') : undefined} onPressOut={() => this.setState({ openDate: true, newTask: { ...newTask, due_date: newTask.due_date ? newTask.due_date : new Date() } })} containerStyle={{ margin: 0, padding: 0 }} placeholder="Tenggat Waktu" />
-                            <Button containerStyle={{ marginBottom: 5 }} title="Pilih file" icon={newTask.file ? { name: 'check', color: '#fff' } : undefined} iconRight onPress={this.chooseFile.bind(this)} type={newTask.file ? 'solid' : 'outline'} />
-                            <Button title="Tambah" disabled={!newTask.name || !newTask.description || !newTask.due_date} loading={addLoading} onPress={this.onAdd.bind(this)} />
+                            <Input inputStyle={{ fontSize: 20 }} value={newTask.name} onChangeText={(t) => this.setState({ newTask: { ...newTask, name: t } })} containerStyle={{ margin: 0, padding: 0 }} errorStyle={{ display: 'none' }} placeholder="Judul" />
+                            <Input inputStyle={{ fontSize: 20, textAlignVertical: 'top' }} multiline={true} numberOfLines={10} value={newTask.description} onChangeText={(t) => this.setState({ newTask: { ...newTask, description: t } })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} placeholder="Deskripsi" />
+                            <Input inputStyle={{ fontSize: 20 }} value={newTask.due_date ? moment(newTask.due_date).format('dddd Do MMMM YYYY, h:mm:ss a') : undefined} onPressOut={() => this.setState({ openDate: true, newTask: { ...newTask, due_date: newTask.due_date ? newTask.due_date : new Date() } })} containerStyle={{ margin: 0, padding: 0 }} placeholder="Tenggat Waktu" />
+                            <Button containerStyle={{ marginBottom: 5 }} titleStyle={{ fontSize: 20 }} title="Pilih file" icon={newTask.file ? { name: 'check', color: '#fff' } : undefined} iconRight onPress={this.chooseFile.bind(this)} type={newTask.file ? 'solid' : 'outline'} />
+                            <Button title="Tambah" titleStyle={{ fontSize: 20 }} disabled={!newTask.name || !newTask.description || !newTask.due_date} loading={addLoading} onPress={this.onAdd.bind(this)} />
                             {openDate && <DateTimePicker
                                 value={newTask.due_date}
                                 mode="date"
@@ -150,15 +178,16 @@ class Room extends React.Component {
                                 tasks.map((r, i) => {
                                     const hasPass = this.hasPass(r.due_date);
                                     return (
-                                        <ListItem onPress={() => navigation.navigate('Task', { task: r, room: route.params.room, hasPass })} Component={TouchableNativeFeedback} key={i} bottomDivider>
+                                        <ListItem onPress={() => navigation.navigate('Task', { task: r, room: route.params.room, fetch: this.fetch.bind(this), hasPass })} Component={TouchableNativeFeedback} key={i} bottomDivider>
                                             <ListItem.Content>
                                                 <ListItem.Title style={{
                                                     fontWeight: 'bold',
-                                                    color: (hasPass ? '#f39c12' : 'black')
+                                                    color: (hasPass ? '#f39c12' : 'black'),
+                                                    fontSize: 20
                                                 }}>{r.name} {hasPass ? <Icon name="lock" color="#f39c12" size={15} /> : null}</ListItem.Title>
-                                                <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
-                                                <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
-                                                <Button icon={{ name: 'close' }} title="Hapus" onPress={async () => {
+                                                <ListItem.Subtitle style={{ fontSize: 18, marginBottom: 5 }}>{shortText(r.description, 50, '...')}</ListItem.Subtitle>
+                                                <ListItem.Subtitle style={{ fontSize: 18, marginBottom: 5 }}>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
+                                                <Button icon={{ name: 'close', color: '#fff' }} buttonStyle={{ backgroundColor: '#e74c3c' }} titleStyle={{ fontSize: 20 }} title="Hapus" onPress={async () => {
                                                     await r.delete();
                                                     await this.fetch();
                                                 }} />
@@ -168,7 +197,7 @@ class Room extends React.Component {
                                 })
                             ) : (
                                 <View style={{ flex: 1, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 15, marginTop: 15 }}>Tugas kosong. Tambah tugas baru</Text>
+                                    <Text style={{ textAlign: 'center', fontSize: 20, marginTop: 15 }}>Tugas kosong. Tambah tugas baru</Text>
                                 </View>
                             )
                         ) : (

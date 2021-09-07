@@ -46,11 +46,11 @@ class Home extends React.Component {
                         <Border />
                     </View>
                     <View style={{ flex: 1, flexDirection: 'row', paddingLeft: 10, paddingRight: 10 }}>
-                        <View style={{ flex: 9, }}>
-                            <Input value={newClass} onChangeText={(t) => this.setState({ newClass: t })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} placeholder="Kelas baru" />
+                        <View style={{ flex: 8, }}>
+                            <Input value={newClass} onChangeText={(t) => this.setState({ newClass: t })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} inputStyle={{ fontSize: 20 }} placeholder="Kelas baru" />
                         </View>
                         <View style={{ flex: 1, paddingTop: 10, alignItems: 'flex-end' }}>
-                            <Icon name="add" disabled={loading || !newClass} onPress={this.onAdd.bind(this)} size={15} raised />
+                            <Icon name="add" disabled={loading || !newClass} onPress={this.onAdd.bind(this)} size={20} raised />
                         </View>
                     </View>
                     <View>
@@ -59,15 +59,15 @@ class Home extends React.Component {
                                 rooms.map((r, i) => (
                                     <ListItem Component={TouchableNativeFeedback} onPress={() => navigation.navigate('Room', { room: r, refreshHome: this.fetch.bind(this) })} key={i} bottomDivider>
                                         <ListItem.Content>
-                                            <ListItem.Title style={{ fontWeight: 'bold' }}>{r.name}</ListItem.Title>
-                                            <ListItem.Subtitle>{r.participants.length} peserta, {r.tasks.length} tugas</ListItem.Subtitle>
+                                            <ListItem.Title style={{ fontWeight: 'bold', fontSize: 20 }}>{r.name}</ListItem.Title>
+                                            <ListItem.Subtitle style={{ fontSize: 20 }}>{r.participants.length} peserta, {r.tasks.length} tugas</ListItem.Subtitle>
                                         </ListItem.Content>
                                         <ListItem.Chevron />
                                     </ListItem>
                                 ))
                             ) : (
                                 <View>
-                                    <Text style={{ textAlign: 'center', fontSize: 15 }}>Kelas kosong. Tambah kelas baru</Text>
+                                    <Text style={{ textAlign: 'center', fontSize: 20 }}>Kelas kosong. Tambah kelas baru</Text>
                                 </View>
                             )
                         ) : (

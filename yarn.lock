@@ -2477,6 +2477,11 @@ diff-sequences@^26.6.2:
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-26.6.2.tgz#48ba99157de1923412eed41db6b6d4aa9ca7c0b1"
   integrity sha512-Mv/TDa3nZ9sbc5soK+OoA74BsS3mL37yixCvUAQkiuA4Wz6YtwP/K47n2rv2ovzHZvoiQeA5FTQOschKkEwB0Q==
 
+diff@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-5.0.0.tgz#7ed6ad76d859d030787ec35855f5b1daf31d852b"
+  integrity sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w==
+
 doctrine@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.1.0.tgz#5cd01fc101621b42c4cd7f5d1a66243716d3f39d"
@@ -4353,6 +4358,11 @@ levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
+
+limit-text-js@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/limit-text-js/-/limit-text-js-1.0.2.tgz#666bcc08e524cb8d01d7922457948f11f29289a1"
+  integrity sha512-QFrw+qqmAqawzKNcKs8+nzIqGcJFbl94L+Z/s6cG7CY3ZZfqP2JpE1bNPk4BvcnwoHysU83jgQbEA2B8VomuJg==
 
 lines-and-columns@^1.1.6:
   version "1.1.6"

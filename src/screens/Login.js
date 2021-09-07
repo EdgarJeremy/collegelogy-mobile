@@ -3,8 +3,8 @@ import { View, ScrollView, StyleSheet, Image, Dimensions } from 'react-native';
 import { Card, Input, Button, Text } from 'react-native-elements';
 
 const style = StyleSheet.create({
-    smText: { fontSize: 15 },
-    link: { color: '#3498db', textDecorationLine: 'underline', fontWeight: 'bold' },
+    smText: { fontSize: 20 },
+    link: { color: '#3498db', textDecorationLine: 'underline', fontWeight: 'bold', fontSize: 20 },
     center: { textAlign: 'center' }
 });
 
@@ -60,12 +60,12 @@ class Login extends React.Component {
                 <ScrollView>
                     <Image source={require('../images/logo.png')} style={{ width: Dimensions.get('screen').width / 1.5, resizeMode: 'contain', alignSelf: 'center', height: 200, marginTop: 10 }} />
                     <Card>
-                        <Card.Title>Login | Collegelogy</Card.Title>
+                        <Card.Title h4>Login | Collegelogy</Card.Title>
                         <Card.Divider />
                         <View>
                             <Input value={data.username} onChangeText={(t) => this.onChange('username', t)} inputStyle={style.smText} label="Email" placeholder="Email" leftIcon={{ name: 'person' }} />
                             <Input value={data.password} onChangeText={(t) => this.onChange('password', t)} secureTextEntry={true} inputStyle={style.smText} label="Password" placeholder="Password" leftIcon={{ name: 'lock' }} />
-                            <Button raised onPress={this.onSubmit.bind(this)} title="Login" type="outline" />
+                            <Button raised onPress={this.onSubmit.bind(this)} titleStyle={{ fontSize: 20 }} title="Login" type="outline" />
                         </View>
                         <Card.Divider />
                         <Text style={[style.link, style.center]} onPress={() => navigation.navigate('Register')}>Belum punya akun?</Text>

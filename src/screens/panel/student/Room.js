@@ -5,6 +5,7 @@ import FileViewer from 'react-native-file-viewer';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import moment from 'moment';
+import { shortText } from 'limit-text-js';
 import Loading from '../../Loading';
 import Border from '../../../components/Border';
 import error from '../../../error';
@@ -35,7 +36,6 @@ class Room extends React.Component {
         const { models, route } = this.props;
         this.setState({ ready: false });
         const tasks = await models.Task.collection({ where: { room_id: route.params.room.id } });
-        console.log(tasks);
         this.setState({ ready: true, tasks: tasks.rows });
     }
     async chooseFile(task) {
@@ -85,7 +85,7 @@ class Room extends React.Component {
         return diff >= 0;
     }
     render() {
-        const { route } = this.props;
+        const { navigation, route } = this.props;
         const { tasks, ready } = this.state;
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -100,9 +100,10 @@ class Room extends React.Component {
                                 tasks.map((r, i) => {
                                     const hasPass = this.hasPass(r.due_date);
                                     return (
-                                        <ListItem Component={TouchableNativeFeedback} key={i} bottomDivider>
+                                        <ListItem Component={TouchableNativeFeedback} onPress={() => navigation.navigate('Task', { task: r, room: route.params.room, fetch: this.fetch.bind(this), hasPass })} key={i} bottomDivider>
                                             <ListItem.Content>
                                                 <ListItem.Title style={{
+                                                    fontSize: 20,
                                                     fontWeight: 'bold',
                                                     color: r.documents.length > 0 ? '#1abc9c' : (hasPass ? '#e74c3c' : 'black')
                                                 }}>
@@ -111,10 +112,10 @@ class Room extends React.Component {
                                                         hasPass ? <Icon name="cancel" size={15} color="#e74c3c" /> : null
                                                     )}
                                                 </ListItem.Title>
-                                                <ListItem.Subtitle>{r.description}</ListItem.Subtitle>
-                                                <ListItem.Subtitle>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
-                                                {(!hasPass && r.documents.length === 0) && <Button onPress={() => this.chooseFile(r)} containerStyle={{ marginTop: 5 }} title="Upload Tugas" icon={{ name: 'file-upload', color: '#fff' }} />}
-                                                {r.hasFile && <Button onPress={() => this.download(r.id, r.filename)} containerStyle={{ marginTop: 5 }} title="Download Tugas" icon={{ name: 'file-download', color: '#fff' }} />}
+                                                <ListItem.Subtitle style={{ fontSize: 18 }}>{shortText(r.description, 50, '...')}</ListItem.Subtitle>
+                                                <ListItem.Subtitle style={{ fontSize: 18 }}>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
+                                                {/* {(!hasPass && r.documents.length === 0) && <Button onPress={() => this.chooseFile(r)} containerStyle={{ marginTop: 5 }} title="Upload Tugas" icon={{ name: 'file-upload', color: '#fff' }} />}
+                                                {r.hasFile && <Button onPress={() => this.download(r.id, r.filename)} containerStyle={{ marginTop: 5 }} title="Download Tugas" icon={{ name: 'file-download', color: '#fff' }} />} */}
                                             </ListItem.Content>
                                         </ListItem>
                                     )

@@ -36,6 +36,7 @@ class Home extends React.Component {
         const { models } = this.props;
         this.setState({ ready: false });
         const rooms = await models.Room.collection();
+        console.log(rooms);
         this.setState({ ready: true, rooms: rooms.rows });
     }
     render() {
@@ -49,11 +50,11 @@ class Home extends React.Component {
                         <Border />
                     </View>
                     <View style={{ flex: 1, flexDirection: 'row', paddingLeft: 10, paddingRight: 10 }}>
-                        <View style={{ flex: 9, }}>
-                            <Input value={classCode} onChangeText={(t) => this.setState({ classCode: t })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} placeholder="Isi kode kelas untuk bergabung" />
+                        <View style={{ flex: 8, }}>
+                            <Input value={classCode} inputStyle={{ fontSize: 20 }} onChangeText={(t) => this.setState({ classCode: t })} errorStyle={{ display: 'none' }} containerStyle={{ margin: 0, padding: 0 }} placeholder="Isi kode kelas untuk bergabung" />
                         </View>
                         <View style={{ flex: 1, paddingTop: 10, alignItems: 'flex-end' }}>
-                            <Icon name="input" disabled={loading || !classCode} onPress={this.onAdd.bind(this)} size={15} raised />
+                            <Icon name="input" disabled={loading || !classCode} onPress={this.onAdd.bind(this)} size={20} raised />
                         </View>
                     </View>
                     <View>
@@ -62,9 +63,9 @@ class Home extends React.Component {
                                 rooms.map((r, i) => (
                                     <ListItem Component={TouchableNativeFeedback} onPress={() => navigation.navigate('Room', { room: r, refreshHome: this.fetch.bind(this) })} key={i} bottomDivider>
                                         <ListItem.Content>
-                                            <ListItem.Title style={{ fontWeight: 'bold' }}>{r.name}</ListItem.Title>
-                                            <ListItem.Subtitle>Oleh {r.owner.name}</ListItem.Subtitle>
-                                            <ListItem.Subtitle>{r.tasks.length} tugas</ListItem.Subtitle>
+                                            <ListItem.Title style={{ fontWeight: 'bold', fontSize: 20 }}>{r.name}</ListItem.Title>
+                                            <ListItem.Subtitle style={{ fontSize: 20 }}>Oleh {r.owner.name}</ListItem.Subtitle>
+                                            <ListItem.Subtitle style={{ fontSize: 20 }}>{r.tasks.length} tugas</ListItem.Subtitle>
                                         </ListItem.Content>
                                         <ListItem.Chevron />
                                     </ListItem>
