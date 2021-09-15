@@ -180,17 +180,23 @@ class Room extends React.Component {
                                     return (
                                         <ListItem onPress={() => navigation.navigate('Task', { task: r, room: route.params.room, fetch: this.fetch.bind(this), hasPass })} Component={TouchableNativeFeedback} key={i} bottomDivider>
                                             <ListItem.Content>
-                                                <ListItem.Title style={{
-                                                    fontWeight: 'bold',
-                                                    color: (hasPass ? '#f39c12' : 'black'),
-                                                    fontSize: 20
-                                                }}>{r.name} {hasPass ? <Icon name="lock" color="#f39c12" size={15} /> : null}</ListItem.Title>
-                                                <ListItem.Subtitle style={{ fontSize: 18, marginBottom: 5 }}>{shortText(r.description, 50, '...')}</ListItem.Subtitle>
-                                                <ListItem.Subtitle style={{ fontSize: 18, marginBottom: 5 }}>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
-                                                <Button icon={{ name: 'close', color: '#fff' }} buttonStyle={{ backgroundColor: '#e74c3c' }} titleStyle={{ fontSize: 20 }} title="Hapus" onPress={async () => {
-                                                    await r.delete();
-                                                    await this.fetch();
-                                                }} />
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <View style={{ flex: 2 }}>
+                                                        <ListItem.Title style={{
+                                                            fontWeight: 'bold',
+                                                            color: (hasPass ? '#f39c12' : 'black'),
+                                                            fontSize: 20
+                                                        }}>{r.name} {hasPass ? <Icon name="lock" color="#f39c12" size={15} /> : null}</ListItem.Title>
+                                                        <ListItem.Subtitle style={{ fontSize: 18, marginBottom: 5 }}>{shortText(r.description, 50, '...')}</ListItem.Subtitle>
+                                                        <ListItem.Subtitle style={{ fontSize: 18, marginBottom: 5 }}>Berakhir {moment(r.due_date).fromNow()}</ListItem.Subtitle>
+                                                    </View>
+                                                    <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                        <Button icon={{ name: 'delete', color: '#fff' }} buttonStyle={{ backgroundColor: '#e74c3c' }} titleStyle={{ fontSize: 20 }} title="Hapus" onPress={async () => {
+                                                            await r.delete();
+                                                            await this.fetch();
+                                                        }} />
+                                                    </View>
+                                                </View>
                                             </ListItem.Content>
                                         </ListItem>
                                     )
